@@ -36,12 +36,25 @@ form.addEventListener('submit', function(event) {
 
     const taskItem = document.createElement('li');
 
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+
     const taskContent = document.createElement('span');
     taskContent.textContent = taskText;
 
     if (taskDate !== '') {
         taskContent.textContent += ' — ' + taskDate;
     }
+
+    checkbox.addEventListener('change', function() {
+        if (checkbox.checked) {
+            taskContent.style.textDecoration = 'line-through';
+            taskContent.style.opacity = '0.5';
+        } else {
+            taskContent.style.textDecoration = 'none';
+            taskContent.style.opacity = '1';
+        }
+    });
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Удалить';
@@ -51,7 +64,7 @@ form.addEventListener('submit', function(event) {
         taskItem.remove();
     });
 
-    taskItem.append(taskContent, deleteButton);
+    taskItem.append(checkbox, taskContent, deleteButton);
     taskList.append(taskItem);
 
     form.reset();
