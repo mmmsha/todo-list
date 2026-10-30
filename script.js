@@ -27,8 +27,8 @@ document.body.append(main);
 form.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const taskText = taskInput.value.trim();
-    const taskDate = dateInput.value;
+    let taskText = taskInput.value.trim();
+    let taskDate = dateInput.value;
 
     if (taskText === '') {
         return;
@@ -56,6 +56,50 @@ form.addEventListener('submit', function(event) {
         }
     });
 
+    const editInput = document.createElement('input');
+    editInput.type = 'text';
+    editInput.hidden = true;
+
+    const editDateInput = document.createElement('input');
+    editDateInput.type = 'date';
+    editDateInput.hidden = true;
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Редактировать';
+    editButton.type = 'button';
+
+    editButton.addEventListener('click', function() {
+        if (editInput.hidden) {
+            editInput.value = taskText;
+            editDateInput.value = taskDate;
+
+            taskContent.hidden = true;
+            editInput.hidden = false;
+            editDateInput.hidden = false;
+
+            editButton.textContent = 'Сохранить';
+        } else {
+            if (editInput.value.trim() === '') {
+                return;
+            }
+
+            taskText = editInput.value.trim();
+            taskDate = editDateInput.value;
+
+            taskContent.textContent = taskText;
+
+            if (taskDate !== '') {
+                taskContent.textContent += ' — ' + taskDate;
+            }
+
+            taskContent.hidden = false;
+            editInput.hidden = true;
+            editDateInput.hidden = true;
+
+            editButton.textContent = 'Редактировать';
+        }
+    });
+
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Удалить';
     deleteButton.type = 'button';
@@ -64,7 +108,15 @@ form.addEventListener('submit', function(event) {
         taskItem.remove();
     });
 
-    taskItem.append(checkbox, taskContent, deleteButton);
+    taskItem.append(
+        checkbox,
+        taskContent,
+        editInput,
+        editDateInput,
+        editButton,
+        deleteButton
+    );
+
     taskList.append(taskItem);
 
     form.reset();
