@@ -23,6 +23,15 @@ const sortButton = document.createElement('button');
 sortButton.type = 'button';
 sortButton.textContent = 'Сортировать по дате';
 
+const searchLabel = document.createElement('label');
+searchLabel.textContent = 'Поиск задач';
+searchLabel.htmlFor = 'task-search';
+
+const searchInput = document.createElement('input');
+searchInput.type = 'search';
+searchInput.id = 'task-search';
+searchInput.placeholder = 'Поиск по названию';
+
 const filterContainer = document.createElement('div');
 
 const allButton = document.createElement('button');
@@ -41,26 +50,47 @@ filterContainer.append(allButton, completedButton, activeButton);
 
 const taskList = document.createElement('ul');
 
-main.append(title, form, sortButton, filterContainer, taskList);
+main.append(
+    title,
+    form,
+    sortButton,
+    searchLabel,
+    searchInput,
+    filterContainer,
+    taskList
+);
+
 document.body.append(main);
 
 let currentFilter = 'all';
 
 function filterTasks() {
     const tasks = taskList.children;
+    const searchText = searchInput.value.trim().toLowerCase();
 
     for (const task of tasks) {
         const completed = task.dataset.completed === 'true';
+        const taskTitle = task.dataset.title.toLowerCase();
+
+        let matchesFilter = false;
 
         if (currentFilter === 'all') {
-            task.hidden = false;
+            matchesFilter = true;
         } else if (currentFilter === 'completed') {
-            task.hidden = !completed;
+            matchesFilter = completed;
         } else {
-            task.hidden = completed;
+            matchesFilter = !completed;
         }
+
+        const matchesSearch = taskTitle.includes(searchText);
+
+        task.hidden = !(matchesFilter && matchesSearch);
     }
 }
+
+searchInput.addEventListener('input', function() {
+    filterTasks();
+});
 
 allButton.addEventListener('click', function() {
     currentFilter = 'all';
@@ -103,6 +133,7 @@ form.addEventListener('submit', function(event) {
     const taskItem = document.createElement('li');
     taskItem.dataset.date = taskDate;
     taskItem.dataset.completed = 'false';
+    taskItem.dataset.title = taskText;
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -157,7 +188,9 @@ form.addEventListener('submit', function(event) {
 
             taskText = editInput.value.trim();
             taskDate = editDateInput.value;
+
             taskItem.dataset.date = taskDate;
+            taskItem.dataset.title = taskText;
 
             taskContent.textContent = taskText;
 
@@ -170,6 +203,8 @@ form.addEventListener('submit', function(event) {
             editDateInput.hidden = true;
 
             editButton.textContent = 'Редактировать';
+
+            filterTasks();
         }
     });
 
