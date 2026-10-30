@@ -35,12 +35,23 @@ form.addEventListener('submit', function(event) {
     }
 
     const taskItem = document.createElement('li');
-    taskItem.textContent = taskText;
+
+    const taskContent = document.createElement('span');
+    taskContent.textContent = taskText;
 
     if (taskDate !== '') {
-        taskItem.textContent += ' — ' + taskDate;
+        taskContent.textContent += ' — ' + taskDate;
     }
 
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Удалить';
+    deleteButton.type = 'button';
+
+    deleteButton.addEventListener('click', function() {
+        taskItem.remove();
+    });
+
+    taskItem.append(taskContent, deleteButton);
     taskList.append(taskItem);
 
     form.reset();
