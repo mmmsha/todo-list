@@ -19,5 +19,29 @@ addButton.textContent = 'Добавить задачу';
 
 form.append(taskInput, dateInput, addButton);
 
-main.append(title, form);
+const taskList = document.createElement('ul');
+
+main.append(title, form, taskList);
 document.body.append(main);
+
+form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const taskText = taskInput.value.trim();
+    const taskDate = dateInput.value;
+
+    if (taskText === '') {
+        return;
+    }
+
+    const taskItem = document.createElement('li');
+    taskItem.textContent = taskText;
+
+    if (taskDate !== '') {
+        taskItem.textContent += ' — ' + taskDate;
+    }
+
+    taskList.append(taskItem);
+
+    form.reset();
+});
