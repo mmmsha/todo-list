@@ -19,10 +19,27 @@ addButton.textContent = 'Добавить задачу';
 
 form.append(taskInput, dateInput, addButton);
 
+const sortButton = document.createElement('button');
+sortButton.type = 'button';
+sortButton.textContent = 'Сортировать по дате';
+
 const taskList = document.createElement('ul');
 
-main.append(title, form, taskList);
+main.append(title, form, sortButton, taskList);
 document.body.append(main);
+
+sortButton.addEventListener('click', function() {
+    const tasks = Array.from(taskList.children);
+
+    tasks.sort(function(a, b) {
+        const dateA = a.dataset.date || '9999-12-31';
+        const dateB = b.dataset.date || '9999-12-31';
+
+        return dateA.localeCompare(dateB);
+    });
+
+    taskList.append(...tasks);
+});
 
 form.addEventListener('submit', function(event) {
     event.preventDefault();
@@ -35,6 +52,7 @@ form.addEventListener('submit', function(event) {
     }
 
     const taskItem = document.createElement('li');
+    taskItem.dataset.date = taskDate;
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -85,6 +103,7 @@ form.addEventListener('submit', function(event) {
 
             taskText = editInput.value.trim();
             taskDate = editDateInput.value;
+            taskItem.dataset.date = taskDate;
 
             taskContent.textContent = taskText;
 
