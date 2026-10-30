@@ -23,10 +23,59 @@ const sortButton = document.createElement('button');
 sortButton.type = 'button';
 sortButton.textContent = 'Сортировать по дате';
 
+const filterContainer = document.createElement('div');
+
+const allButton = document.createElement('button');
+allButton.textContent = 'Все';
+allButton.type = 'button';
+
+const completedButton = document.createElement('button');
+completedButton.textContent = 'Выполненные';
+completedButton.type = 'button';
+
+const activeButton = document.createElement('button');
+activeButton.textContent = 'Невыполненные';
+activeButton.type = 'button';
+
+filterContainer.append(allButton, completedButton, activeButton);
+
 const taskList = document.createElement('ul');
 
-main.append(title, form, sortButton, taskList);
+main.append(title, form, sortButton, filterContainer, taskList);
 document.body.append(main);
+
+let currentFilter = 'all';
+
+function filterTasks() {
+    const tasks = taskList.children;
+
+    for (const task of tasks) {
+        const completed = task.dataset.completed === 'true';
+
+        if (currentFilter === 'all') {
+            task.hidden = false;
+        } else if (currentFilter === 'completed') {
+            task.hidden = !completed;
+        } else {
+            task.hidden = completed;
+        }
+    }
+}
+
+allButton.addEventListener('click', function() {
+    currentFilter = 'all';
+    filterTasks();
+});
+
+completedButton.addEventListener('click', function() {
+    currentFilter = 'completed';
+    filterTasks();
+});
+
+activeButton.addEventListener('click', function() {
+    currentFilter = 'active';
+    filterTasks();
+});
 
 sortButton.addEventListener('click', function() {
     const tasks = Array.from(taskList.children);
@@ -53,6 +102,7 @@ form.addEventListener('submit', function(event) {
 
     const taskItem = document.createElement('li');
     taskItem.dataset.date = taskDate;
+    taskItem.dataset.completed = 'false';
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -65,6 +115,8 @@ form.addEventListener('submit', function(event) {
     }
 
     checkbox.addEventListener('change', function() {
+        taskItem.dataset.completed = checkbox.checked;
+
         if (checkbox.checked) {
             taskContent.style.textDecoration = 'line-through';
             taskContent.style.opacity = '0.5';
@@ -72,6 +124,8 @@ form.addEventListener('submit', function(event) {
             taskContent.style.textDecoration = 'none';
             taskContent.style.opacity = '1';
         }
+
+        filterTasks();
     });
 
     const editInput = document.createElement('input');
@@ -138,5 +192,6 @@ form.addEventListener('submit', function(event) {
 
     taskList.append(taskItem);
 
+    filterTasks();
     form.reset();
 });
