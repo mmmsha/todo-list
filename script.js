@@ -1,3 +1,4 @@
+
 const main = document.createElement('main');
 
 const title = document.createElement('h1');
@@ -64,11 +65,22 @@ document.body.append(main);
 
 let currentFilter = 'all';
 
+function saveTasks() {
+    const tasks = Array.from(taskList.children).map(function(task) {
+        return {
+            title: task.dataset.title,
+            date: task.dataset.date,
+            completed: task.dataset.completed === 'true'
+        };
+    });
+
+    localStorage.setItem('todoTasks', JSON.stringify(tasks));
+}
+
 function filterTasks() {
-    const tasks = taskList.children;
     const searchText = searchInput.value.trim().toLowerCase();
 
-    for (const task of tasks) {
+    for (const task of taskList.children) {
         const completed = task.dataset.completed === 'true';
         const taskTitle = task.dataset.title.toLowerCase();
 
@@ -88,61 +100,26 @@ function filterTasks() {
     }
 }
 
-searchInput.addEventListener('input', function() {
-    filterTasks();
-});
-
-allButton.addEventListener('click', function() {
-    currentFilter = 'all';
-    filterTasks();
-});
-
-completedButton.addEventListener('click', function() {
-    currentFilter = 'completed';
-    filterTasks();
-});
-
-activeButton.addEventListener('click', function() {
-    currentFilter = 'active';
-    filterTasks();
-});
-
-sortButton.addEventListener('click', function() {
-    const tasks = Array.from(taskList.children);
-
-    tasks.sort(function(a, b) {
-        const dateA = a.dataset.date || '9999-12-31';
-        const dateB = b.dataset.date || '9999-12-31';
-
-        return dateA.localeCompare(dateB);
-    });
-
-    taskList.append(...tasks);
-});
-
-form.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    let taskText = taskInput.value.trim();
-    let taskDate = dateInput.value;
-
-    if (taskText === '') {
-        return;
-    }
-
+function createTask(taskText, taskDate, completed = false) {
     const taskItem = document.createElement('li');
-    taskItem.dataset.date = taskDate;
-    taskItem.dataset.completed = 'false';
     taskItem.dataset.title = taskText;
+    taskItem.dataset.date = taskDate;
+    taskItem.dataset.completed = completed;
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
+    checkbox.checked = completed;
 
     const taskContent = document.createElement('span');
     taskContent.textContent = taskText;
 
     if (taskDate !== '') {
         taskContent.textContent += ' — ' + taskDate;
+    }
+
+    if (completed) {
+        taskContent.style.textDecoration = 'line-through';
+        taskContent.style.opacity = '0.5';
     }
 
     checkbox.addEventListener('change', function() {
@@ -157,6 +134,7 @@ form.addEventListener('submit', function(event) {
         }
 
         filterTasks();
+        saveTasks();
     });
 
     const editInput = document.createElement('input');
@@ -189,8 +167,8 @@ form.addEventListener('submit', function(event) {
             taskText = editInput.value.trim();
             taskDate = editDateInput.value;
 
-            taskItem.dataset.date = taskDate;
             taskItem.dataset.title = taskText;
+            taskItem.dataset.date = taskDate;
 
             taskContent.textContent = taskText;
 
@@ -205,6 +183,7 @@ form.addEventListener('submit', function(event) {
             editButton.textContent = 'Редактировать';
 
             filterTasks();
+            saveTasks();
         }
     });
 
@@ -214,6 +193,7 @@ form.addEventListener('submit', function(event) {
 
     deleteButton.addEventListener('click', function() {
         taskItem.remove();
+        saveTasks();
     });
 
     taskItem.append(
@@ -226,7 +206,59 @@ form.addEventListener('submit', function(event) {
     );
 
     taskList.append(taskItem);
-
     filterTasks();
+}
+
+searchInput.addEventListener('input', function() {
+    filterTasks();
+});
+
+allButton.addEventListener('click', function() {
+    currentFilter = 'all';
+    filterTasks();
+});
+
+completedButton.addEventListener('click', function() {
+    currentFilter = 'completed';
+    filterTasks();
+});
+
+activeButton.addEventListener('click', function() {
+    currentFilter = 'active';
+    filterTasks();
+});
+
+sortButton.addEventListener('click', function() {
+    const tasks = Array.from(taskList.children);
+
+    tasks.sort(function(a, b) {
+        const dateA = a.dataset.date || '9999-12-31';
+        const dateB = b.dataset.date || '9999-12-31';
+
+        return dateA.localeCompare(dateB);
+    });
+
+    taskList.append(...tasks);
+    saveTasks();
+});
+
+form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const taskText = taskInput.value.trim();
+    const taskDate = dateInput.value;
+
+    if (taskText === '') {
+        return;
+    }
+
+    createTask(taskText, taskDate);
+    saveTasks();
     form.reset();
+});
+
+const savedTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+
+savedTasks.forEach(function(task) {
+    createTask(task.title, task.date, task.completed);
 });
