@@ -1,9 +1,11 @@
 const main = document.createElement('main');
+main.className = 'app';
 
 const title = document.createElement('h1');
 title.textContent = 'Мои задачи';
 
 const form = document.createElement('form');
+form.className = 'task-form';
 
 const taskInput = document.createElement('input');
 taskInput.type = 'text';
@@ -20,6 +22,7 @@ addButton.textContent = 'Добавить задачу';
 form.append(taskInput, dateInput, addButton);
 
 const sortButton = document.createElement('button');
+sortButton.className = 'sort-button';
 sortButton.type = 'button';
 sortButton.textContent = 'Сортировать по дате';
 
@@ -32,7 +35,12 @@ searchInput.type = 'search';
 searchInput.id = 'task-search';
 searchInput.placeholder = 'Поиск по названию';
 
+const searchBlock = document.createElement('div');
+searchBlock.className = 'search-block';
+searchBlock.append(searchLabel, searchInput);
+
 const filterContainer = document.createElement('div');
+filterContainer.className = 'filter-buttons';
 
 const allButton = document.createElement('button');
 allButton.textContent = 'Все';
@@ -49,13 +57,13 @@ activeButton.type = 'button';
 filterContainer.append(allButton, completedButton, activeButton);
 
 const taskList = document.createElement('ul');
+taskList.className = 'task-list';
 
 main.append(
     title,
     form,
     sortButton,
-    searchLabel,
-    searchInput,
+    searchBlock,
     filterContainer,
     taskList
 );

@@ -1,0 +1,122 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff0f8;
+    color: #654775;
+}
+
+main {
+    max-width: 800px;
+    width: 90%;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #a76bc5;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="search"] {
+    padding: 10px;
+    border: 1px solid #e6c5ed;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+form input[type="text"] {
+    flex: 1;
+    min-width: 180px;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: #e8c9f4;
+    color: #654775;
+    cursor: pointer;
+}
+
+form button {
+    background-color: #f4b8d7;
+}
+
+main > button {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="search"] {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+main > div {
+    margin-bottom: 20px;
+}
+
+main > div button {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+ul {
+    padding: 0;
+    list-style: none;
+}
+
+li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fcf2ff;
+    border: 1px solid #edd5f5;
+    border-radius: 15px;
+}
+
+li span {
+    flex: 1;
+    min-width: 140px;
+    overflow-wrap: anywhere;
+}
+
+li input[type="text"],
+li input[type="date"] {
+    max-width: 100%;
+}
+
+li button:last-child {
+    background-color: #ffd5e5;
+}
+
+input[type="checkbox"] {
+    accent-color: #bd86d6;
+}
+
+[hidden] {
+    display: none !important;
+}
