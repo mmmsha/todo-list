@@ -9,7 +9,7 @@ body {
     color: #654775;
 }
 
-main {
+.app {
     max-width: 800px;
     width: 90%;
     margin: 40px auto;
@@ -23,7 +23,7 @@ h1 {
     color: #a76bc5;
 }
 
-form {
+.task-form {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -57,7 +57,7 @@ form button {
     background-color: #f4b8d7;
 }
 
-main > button {
+.sort-button {
     margin-bottom: 20px;
 }
 
@@ -72,16 +72,16 @@ input[type="search"] {
     margin-bottom: 20px;
 }
 
-main > div {
+.search-block, .filter-buttons {
     margin-bottom: 20px;
 }
 
-main > div button {
+.filter-buttons button {
     margin-right: 8px;
     margin-bottom: 8px;
 }
 
-ul {
+.task-list {
     padding: 0;
     list-style: none;
 }
