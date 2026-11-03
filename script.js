@@ -1,4 +1,3 @@
-
 const main = document.createElement('main');
 
 const title = document.createElement('h1');
@@ -64,6 +63,7 @@ main.append(
 document.body.append(main);
 
 let currentFilter = 'all';
+let draggedTask = null;
 
 function saveTasks() {
     const tasks = Array.from(taskList.children).map(function(task) {
@@ -105,6 +105,20 @@ function createTask(taskText, taskDate, completed = false) {
     taskItem.dataset.title = taskText;
     taskItem.dataset.date = taskDate;
     taskItem.dataset.completed = completed;
+    taskItem.draggable = true;
+    taskItem.style.cursor = 'grab';
+
+    taskItem.addEventListener('dragstart', function(event) {
+        draggedTask = taskItem;
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', taskText);
+        taskItem.style.opacity = '0.5';
+    });
+
+    taskItem.addEventListener('dragend', function() {
+        taskItem.style.opacity = '1';
+        draggedTask = null;
+    });
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -208,6 +222,39 @@ function createTask(taskText, taskDate, completed = false) {
     taskList.append(taskItem);
     filterTasks();
 }
+
+taskList.addEventListener('dragover', function(event) {
+    event.preventDefault();
+});
+
+taskList.addEventListener('drop', function(event) {
+    event.preventDefault();
+
+    if (draggedTask === null) {
+        return;
+    }
+
+    const target = event.target.closest('li');
+
+    if (target === draggedTask) {
+        return;
+    }
+
+    if (target) {
+        const rect = target.getBoundingClientRect();
+        const middle = rect.top + rect.height / 2;
+
+        if (event.clientY < middle) {
+            taskList.insertBefore(draggedTask, target);
+        } else {
+            taskList.insertBefore(draggedTask, target.nextSibling);
+        }
+    } else {
+        taskList.append(draggedTask);
+    }
+
+    saveTasks();
+});
 
 searchInput.addEventListener('input', function() {
     filterTasks();
